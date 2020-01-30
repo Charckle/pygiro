@@ -31,7 +31,7 @@ def main_menu():
     return terminal_menu.show()
 
 def get_rating():
-    terminal_menu = TerminalMenu(["0", "1", "2", "3", "4", "5"], title="Give the location a rating from 1 to 5")
+    terminal_menu = TerminalMenu(["0", "1", "2", "3", "4", "5"], title="Give the location a rating from 0 to 5: ")
 
 
 def get_l_type():
@@ -54,7 +54,7 @@ def get_l_type():
         logging.debug(f"Cave selected.")
     
     elif l_type == 5:
-        logging.debug(f"Waterfall selected.")
+        logging.debug(f"Waterfall selected")
 
     elif l_type == 6:
         logging.debug(f"Hilltop/Mountain selected.")
@@ -69,24 +69,27 @@ def get_l_type():
     return l_type
 
 def get_l_coordinates():
-    latitude = input("Give the latitude of the location.")
-    longitude = input("Give the longitude of the location.")
+    latitude = input("Give the latitude of the location: ")
+    longitude = input("Give the longitude of the location: ")
 
     return {"latitude": latitude, "longitude": longitude}
 
 def get_tts():
     tts = None
     while True:
-        tts = input("Give the time you can spend on the location in minutes.")
+        tts = input("Give the time you can spend on the location in minutes: ")
         try:
             if isinstance(int(tts), int):
-                 break
+                break
+        except:
+            pass
 
+    logging.debug(f"Selected time to stay {tts}")
 
     return int(tts)
 
 def get_rating():
-    terminal_menu = TerminalMenu(["0 - If you have time, go see it once", "1 - Nothing special, but nice to see", "2 - Worth seeing if you can spare the time", "3 - Check it out, you wont regret it", "4 - Really good, top and see it" "5 - A must every time!"], title="How would you rate the location, where 5 is the best?")
+    terminal_menu = TerminalMenu(["0 - If you have time, go see it once", "1 - Nothing special, but nice to see", "2 - Worth seeing if you can spare the time", "3 - Check it out, you wont regret it", "4 - Really good, top and see it", "5 - A must every time!"], title="How would you rate the location, where 5 is the best?")
     
     l_type =  terminal_menu.show()
     
@@ -100,13 +103,16 @@ def get_l_ttl():
         ttl = input("Give the time you need to get to the location in minutes.")
         try:
             if isinstance(int(ttl), int):
-                 break
+                break
+        except:
+            pass
 
+    logging.debug(f"Selected time to location {ttl}")
 
     return int(ttl)
 
 def get_mtld():
-    terminal_menu = TerminalMenu(["PP0 - Easy, do not bother to mention", "PP1 - Peacefull walk", "PP2 - Can have some climbing protections", "3 - Climbing protections, but not exposed, phisical strenght needed", "4 - Vertical, exposed route" "5 - Basicaly rock climbing with steel cables.",  "6 - Like 5 but harder and more vertica"], title="Select the max to location difficulty. 0 is for parking the car and walking to the location on a paved road.")
+    terminal_menu = TerminalMenu(["PP0 - Easy, do not bother to mention", "PP1 - Peacefull walk", "PP2 - Can have some climbing protections", "PP3 - Climbing protections, but not exposed, phisical strenght needed", "PP4 - Vertical, exposed route", "PP5 - Basicaly rock climbing with steel cables.",  "PP6 - Like 5 but harder and more vertica"], title="Select the max to location difficulty. 0 is for parking the car and walking to the location on a paved road.")
     
     l_mtld =  terminal_menu.show()
     
@@ -119,39 +125,67 @@ def get_contacts():
     tel = input("Telephone number of the location: ")
     email = input("Email address of the location: ")
 
-    return {"webpage": web, "tel": tel, "email": email}
+    contacts = {"webpage": web, "tel": tel, "email": email}
+    
+    logging.debug(f"Selected the contacts {contacts}")
+
+    return contacts
 
 def get_fee():
     terminal_menu = TerminalMenu(["No", "Depends", "Yes"], title="Does the location have a fee?")
     
-    l_mtld =  terminal_menu.show()
+    l_fee =  terminal_menu.show()
     
-    logging.debug(f"Selected max to location difficulty {l_mtld}")
+    logging.debug(f"Selected fee status {l_fee}")
 
-    return l_mtld
+    return l_fee
 
 
 def create_mode():
     new_location = {}
-    logging.info(f"Getting the locations name.")
+
+    logging.debug(f"Getting the locations name.")
     new_location["name"] = input("What is the name of the new location? ")
+    logging.debug(f"Selected {new_location['name']}")
     
-    logging.info(f"Selecting the location type.")
+    logging.debug(f"Selecting the location type.")
     new_location["type"] = get_l_type()
+
     logging.debug(f"Selecting tags.")
     new_location["tags"] = input("Write the tags for the location, separate them with ',': ")
+    logging.debug(f"Selected tags: {new_location['tags']}")
+    
     logging.debug(f"Selecting rating.")
     new_location["rating"] = get_rating()
+    
     logging.debug(f"Selecting TTS.")
     new_location["tts"] = get_tts()
+    
     logging.debug(f"Selecting coordinates.")
     new_location["l_coordinates"] = get_l_coordinates()
+    
+    logging.debug(f"Selecting max to location difficulty.")
     new_location["mtld"] =  get_mtld()
+    
+    logging.debug(f"Selecting short description.")
     new_location["short_d"] = input("Write a short description of the location: ")
+    logging.debug(f"Selected short description: {new_location['short_d']}")
+    
+    logging.debug(f"Selecting long description.")
     new_location["long_d"] = input("Write a long description of the location: ")
-    new_location["contact"] =  ()
+    logging.debug(f"Selected long description: {new_location['long_d']}")
+    
+    logging.debug(f"Selecting contact details.")
+    new_location["contact"] =  get_contacts()
+    
+    logging.debug(f"Selecting a timetable.")
     new_location["timetable"] = input("Write the timetable: ")
-    new_location["fee"] = 
+    logging.debug(f"Selected long description: {new_location['timetable']}")
+    
+    logging.debug(f"Selecting fee status.")
+    new_location["fee"] = get_fee()
+
+    print(new_location)
 
 
 
