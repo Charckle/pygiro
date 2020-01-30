@@ -1,0 +1,3 @@
+data/*
+data/databases*
+modules/__pycache__/*
