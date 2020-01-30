@@ -77,13 +77,59 @@ def get_l_coordinates():
 def get_tts():
     tts = None
     while True:
-        tts = input("Give the time you can spend on the location.")
+        tts = input("Give the time you can spend on the location in minutes.")
         try:
-            if int(tts) in range(1,6):
+            if isinstance(int(tts), int):
                  break
 
 
     return int(tts)
+
+def get_rating():
+    terminal_menu = TerminalMenu(["0 - If you have time, go see it once", "1 - Nothing special, but nice to see", "2 - Worth seeing if you can spare the time", "3 - Check it out, you wont regret it", "4 - Really good, top and see it" "5 - A must every time!"], title="How would you rate the location, where 5 is the best?")
+    
+    l_type =  terminal_menu.show()
+    
+    logging.debug(f"Selected rating {l_type}")
+
+    return l_type
+
+def get_l_ttl():
+    ttl = None
+    while True:
+        ttl = input("Give the time you need to get to the location in minutes.")
+        try:
+            if isinstance(int(ttl), int):
+                 break
+
+
+    return int(ttl)
+
+def get_mtld():
+    terminal_menu = TerminalMenu(["PP0 - Easy, do not bother to mention", "PP1 - Peacefull walk", "PP2 - Can have some climbing protections", "3 - Climbing protections, but not exposed, phisical strenght needed", "4 - Vertical, exposed route" "5 - Basicaly rock climbing with steel cables.",  "6 - Like 5 but harder and more vertica"], title="Select the max to location difficulty. 0 is for parking the car and walking to the location on a paved road.")
+    
+    l_mtld =  terminal_menu.show()
+    
+    logging.debug(f"Selected max to location difficulty {l_mtld}")
+
+    return l_mtld
+
+def get_contacts():
+    web = input("Webpage of the location, (no https://): ")
+    tel = input("Telephone number of the location: ")
+    email = input("Email address of the location: ")
+
+    return {"webpage": web, "tel": tel, "email": email}
+
+def get_fee():
+    terminal_menu = TerminalMenu(["No", "Depends", "Yes"], title="Does the location have a fee?")
+    
+    l_mtld =  terminal_menu.show()
+    
+    logging.debug(f"Selected max to location difficulty {l_mtld}")
+
+    return l_mtld
+
 
 def create_mode():
     new_location = {}
@@ -95,11 +141,18 @@ def create_mode():
     logging.debug(f"Selecting tags.")
     new_location["tags"] = input("Write the tags for the location, separate them with ',': ")
     logging.debug(f"Selecting rating.")
-    new_location["rating"] = input("Give the location a rating from 1 to 5: ")
+    new_location["rating"] = get_rating()
     logging.debug(f"Selecting TTS.")
     new_location["tts"] = get_tts()
     logging.debug(f"Selecting coordinates.")
     new_location["l_coordinates"] = get_l_coordinates()
+    new_location["mtld"] =  get_mtld()
+    new_location["short_d"] = input("Write a short description of the location: ")
+    new_location["long_d"] = input("Write a long description of the location: ")
+    new_location["contact"] =  ()
+    new_location["timetable"] = input("Write the timetable: ")
+    new_location["fee"] = 
+
 
 
 
