@@ -5,6 +5,41 @@ from simple_term_menu import TerminalMenu
 
 logging.basicConfig(level=logging.DEBUG)  #filename='upTimer.log',level=logging.INFO, filemode='w')
 
+class Location():
+    def __init__(self, data):
+        self.name = data["name"]
+        self.type = data["type"]
+        self.tags = data["tags"]
+        self.rating = data["rating"]
+        self.tts = data["tts"]
+        self.l_coordinates = data["l_coordinates"]
+        self.mtld = data["mtld"]
+        self.short_d = data["short_d"]
+        self.long_d = data["long_d"]
+        self.contact = data["contact"]
+        self.timetable = data["timetable"]
+        self.fee = data["fee"]
+        self.child = data["child"]    
+        self.season = data["season"]    
+
+    def __str__(self):
+        print(f"Location name: {self.name}")
+        print(f"Type: {type_to_name(self.type)}")
+        print(f"Tags: {self.tags}")
+        print(f"Location rating: {self.rating}")
+        print(f"Time to spend: {self.tts}")
+        print(f"Latitude: {self.l_coordinates[0]}, Longitude: {self.l_coordinates[1]}")
+        print(f"Maximum to location difficulty: P{self.mtld}")
+        print(f"Description: {self.short_d}")
+        print(f"Long description: {self.long_d}")
+        print(f"Webpage: {self.contact[0]}\nTel: {self.contact[1]}\nEmail: {self.contact[2]}")
+        print(f"Timetable: {self.timetable}")
+        print(f"Fee: {no_dep_yes(self.fee)}")
+        print(f"Suitable for children: {no_dep_yes(self.child)}")
+        print(f"Season dependant: {no_yes(self.season)}")
+
+
+ 
 def check_for_files():
     logging.debug(f"Checking if all needed files are present.")
     proceed = False
@@ -33,9 +68,57 @@ def main_menu():
 def get_rating():
     terminal_menu = TerminalMenu(["0", "1", "2", "3", "4", "5"], title="Give the location a rating from 0 to 5: ")
 
+def no_dep_yes(ndy):
+    if ndy == 0:
+        return "No"
+
+    elif ndy == 1:
+        return "Depends"
+
+    else:
+        return "Yes"
+
+def no_yes(ndy):
+    if ndy == 0:
+        return "No"
+
+    else:
+        return "Yes"
+
+def type_to_name(l_type):
+    if l_type == 0:
+        return "History"
+
+    elif l_type == 1:
+        return "Nature"
+
+    elif l_type == 2:
+        return "Fun"
+
+    elif l_type == 3:
+        return "Castle"
+
+    elif l_type == 4:
+        return "Cave"
+    
+    elif l_type == 5:
+        return "Waterfall"
+
+    elif l_type == 6:
+        return "Hilltop/Mountain"
+    
+    elif l_type == 7:
+        return "Food place"
+   
+    elif l_type == 8:
+        return "Museum"
+
+    else:
+        return "ERROR"
+
 
 def get_l_type():
-    terminal_menu = TerminalMenu(["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place"], title="What type will the new location be?")
+    terminal_menu = TerminalMenu(["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place", "Museum"], title="What type will the new location be?")
     
     l_type =  terminal_menu.show()
     if l_type == 0:
@@ -62,6 +145,10 @@ def get_l_type():
     elif l_type == 7:
         logging.debug(f"Food place selected.")
 
+    elif l_type == 8:
+        logging.debug(f" selected.")
+
+
     else:
         logging.debug(f"Nothing selected. Fun selected.")
         l_type = 2
@@ -72,7 +159,8 @@ def get_l_coordinates():
     latitude = input("Give the latitude of the location: ")
     longitude = input("Give the longitude of the location: ")
 
-    return {"latitude": latitude, "longitude": longitude}
+    #return {"latitude": latitude, "longitude": longitude}
+    return [latitude, longitude]
 
 def get_tts():
     tts = None
@@ -125,7 +213,7 @@ def get_contacts():
     tel = input("Telephone number of the location: ")
     email = input("Email address of the location: ")
 
-    contacts = {"webpage": web, "tel": tel, "email": email}
+    contacts = [web, tel, email]
     
     logging.debug(f"Selected the contacts {contacts}")
 
@@ -139,6 +227,39 @@ def get_fee():
     logging.debug(f"Selected fee status {l_fee}")
 
     return l_fee
+
+def get_child():
+    terminal_menu = TerminalMenu(["No", "Depends", "Yes"], title="Is the location suitable for children?")
+    
+    l_child =  terminal_menu.show()
+    
+    logging.debug(f"Selected fee status {l_child}")
+
+    return l_child
+
+def get_season():
+    terminal_menu = TerminalMenu(["No", "Yes"], title="Is the location season dependand?")
+    
+    l_season =  terminal_menu.show()
+    
+    if l_season == 1:
+        comment =  input("How is it dependant?: ")
+    else:
+        comment = "" 
+
+    logging.debug(f"Selected season dependant {l_season}")
+
+    return [l_season, comment]
+
+
+def location_need_changes():
+    terminal_menu = TerminalMenu(["Yes", "No"], title="Do you agree with the inserted data?")
+    
+    l_ok =  terminal_menu.show()
+    
+    logging.debug(f"Selected needs changes: {l_ok}")
+
+    return l_ok
 
 
 def create_mode():
@@ -185,8 +306,17 @@ def create_mode():
     logging.debug(f"Selecting fee status.")
     new_location["fee"] = get_fee()
 
-    print(new_location)
+    logging.debug(f"Selecting child status.")
+    new_location["child"] = get_child()
+    
+    logging.debug(f"Selecting season")
+    new_location["season"] = get_season()
 
+
+    new_location_created = Location(new_location)
+    new_location_created.__str__()
+
+    change_data_l = location_need_changes()
 
 
 

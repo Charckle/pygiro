@@ -1,3 +1,4 @@
 data/*
 data/databases*
 modules/__pycache__/*
+*.swp
