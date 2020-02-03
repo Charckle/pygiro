@@ -38,6 +38,29 @@ class Location():
         print(f"Suitable for children: {no_dep_yes(self.child)}")
         print(f"Season dependant: {no_yes(self.season)}")
 
+    def to_database(self):
+        new_location = {}
+
+        logging.debug(f"Writting {new_location["name"]} to main database.")
+        new_location["name"] = self.name
+        new_location["type"] = self.type
+        new_location["tags"] = self.tags
+        new_location["rating"] = self.rating
+        new_location["tts"] = self.tts
+        new_location["l_coordinates"] = self.l_coordinates
+        new_location["mtld"] = self.mtld
+        new_location["short_d"] = self.short_d
+        new_location["long_d"] = self.long_d
+        new_location["contact"] = self.contact
+        new_location["timetable"] = self.timetable
+        new_location["fee"] = self.fee
+        new_location["child"] = self.child
+        new_location["season"] = self.season
+
+
+        all_locations = pylavor.json_read("data/databases", "all_places.json")
+        all_locations[new_location["name"]] = new_location
+        pylavor.json_write("data/databases", "all_places.json", all_locations)
 
  
 def check_for_files():
@@ -257,7 +280,7 @@ def location_need_changes():
     
     l_ok =  terminal_menu.show()
     
-    logging.debug(f"Selected needs changes: {l_ok}")
+    logging.debug(f"Selected is OK changes: {l_ok}")
 
     return l_ok
 
@@ -317,6 +340,10 @@ def create_mode():
     new_location_created.__str__()
 
     change_data_l = location_need_changes()
+    if change_data_l == 0:
+        alter_mode(new_location_created)
+
+    else:
 
 
 
