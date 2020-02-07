@@ -5,6 +5,8 @@ from simple_term_menu import TerminalMenu
 
 logging.basicConfig(level=logging.DEBUG)  #filename='upTimer.log',level=logging.INFO, filemode='w')
 
+types_l = ["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place", "Museum"]
+
 class Location():
     def __init__(self, data):
         self.name = data["name"]
@@ -38,10 +40,10 @@ class Location():
         print(f"Suitable for children: {no_dep_yes(self.child)}")
         print(f"Season dependant: {no_yes(self.season)}")
 
-    def to_database(self):
+    def to_database(self, location_id = None):
         new_location = {}
 
-        logging.debug(f"Writting {new_location["name"]} to main database.")
+        logging.debug(f"Writting {self.name} to main database.")
         new_location["name"] = self.name
         new_location["type"] = self.type
         new_location["tags"] = self.tags
@@ -59,9 +61,16 @@ class Location():
 
 
         all_locations = pylavor.json_read("data/databases", "all_places.json")
-        all_locations[new_location["name"]] = new_location
+
+        if location_id != None:
+            location_id = len(all_locations)
+        
+        all_locations[location_id] = new_location
         pylavor.json_write("data/databases", "all_places.json", all_locations)
 
+        logging.info(f"Location  {self.name} saved to the main database.")
+
+        return location_id
  
 def check_for_files():
     logging.debug(f"Checking if all needed files are present.")
@@ -141,7 +150,11 @@ def type_to_name(l_type):
 
 
 def get_l_type():
-    terminal_menu = TerminalMenu(["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place", "Museum"], title="What type will the new location be?")
+
+    #types_l are defined on the top
+    #types_l = ["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place", "Museum"]
+
+    terminal_menu = TerminalMenu(types_l, title="What type will the new location be?")
     
     l_type =  terminal_menu.show()
     if l_type == 0:
@@ -280,6 +293,9 @@ def location_need_changes():
     
     l_ok =  terminal_menu.show()
     
+    if l_ok == None:
+        l_ok == 1
+
     logging.debug(f"Selected is OK changes: {l_ok}")
 
     return l_ok
@@ -339,19 +355,135 @@ def create_mode():
     new_location_created = Location(new_location)
     new_location_created.__str__()
 
+    #save to the database
+    locations_location_in_db = new_location_created.to_database()
+    
+    #asks you, if the data is correct. If not, you can change it.
     change_data_l = location_need_changes()
-    if change_data_l == 0:
-        alter_mode(new_location_created)
 
-    else:
+    if change_data_l == 1:
+        alter_mode(str(locations_location_in_db))
 
 
 
 def browse_mode():
-    pass
+    all_locations = pylavor.json_read("data/databases", "all_places.json")
+    
+    terminal_menu = TerminalMenu(["Criteria", "Search"], title="Search od add criteria?")
+    l_CS =  terminal_menu.show()
 
-def alter_mode():
-    pass
+    #define results_location dictionary, where we will put all results to display
+    results_locations = {}
+    if l_CS == 0:
+        terminal_menu = TerminalMenu(types_l, title="Any specific type?")
+        l_criteria =  terminal_menu.show()
+
+        if l_criteria != None:
+            for i, b in all_locations.items():
+                if b["type"] == l_criteria:
+                    results_locations[i] = b
+
+    else:
+        search_term = input("Insert a term to search for: ") 
+
+    print(results_locations)
+
+        
+
+def alter_mode(locations_locations_in_db):
+
+    all_locations = pylavor.json_read("data/databases", "all_places.json")
+    selected_location = Location(all_locations[locations_locations_in_db])
+       
+
+    while True:
+        options = ["Name",
+        "Type of location",
+        "Tags",
+        "Rating",
+        "Time To Spend on the location",
+        "Location Coordinates",
+        "Max To Location Difficulty",
+        "Short Description",
+        "Long Description",
+        "Contacts",
+        "Timetable",
+        "Fee",
+        "Child suitable",
+        "Season Dependant"]
+
+        terminal_menu = TerminalMenu(options, title="Select what you want to alter.")
+        
+        alter =  terminal_menu.show()
+
+
+        if alter == 0:
+            print(f"Location name: {selected_location.name}")
+            selected_location.name = input("Type a name of the location: ")
+
+        elif alter == 1:
+            print(f"Location type: {selected_location.type}")
+            selected_location.type = get_l_type()
+
+        elif alter == 2:
+            print(f"Location tags: {selected_location.tags}")
+            selected_location.tags = input("Insert tags for the location: ")
+
+        elif alter == 3:
+            print(f"Location Rating: {selected_location.rating}")
+            selected_location.rating = get_rating()
+
+        elif alter == 4:
+            print(f"Location Time to Spend on locations: {selected_location.tts}")
+            selected_location.tts = get_l_ttl()
+
+        elif alter == 5:
+            print(f"Location Coordinates: {selected_location.coordinates}")
+            selected_location.coordinates = get_l_coordinates()
+
+        elif alter == 6:
+            print(f"Max to Location Difficulty: {selected_location.mtld}")
+            selected_location.mtld = get_mtld()
+
+        elif alter == 7:
+            print(f"Short description: {selected_location.short_d}")
+            selected_location.short_d = input("Insert a short description: ") 
+
+        elif alter == 8:
+            print(f"Long description: {selected_location.long_d}")
+            selected_location.long_d = input("Insert a long description: ") 
+
+        elif alter == 9:
+            print(f"Contact info: {selected_location.contacts[0]}\n{selected_location.contacts[1]}\n{selected_location.contacts[2]}")
+            selected_location.contacts
+        
+        elif alter == 10:
+            print(f"Timetable: {selected_location.timetable}")
+            selected_location.timetable = input("Insert a timetable specifics: ")
+
+        elif alter == 11:
+            print(f"Fee: {no_dep_yes(self.fee)}")
+            gselected_location.fee = set_fee()
+        
+        elif alter == 12:
+            print(f"Suitable for children: {no_dep_yes(self.child)}")
+            selected_location.child = get_child()
+
+        elif alter == 13:
+            print(f"Season dependand: {no_yes(self.season)}")
+            selected_location.season = get_season()
+
+        else:
+            selected_location.__str__()
+
+            if location_need_changes() == 0:
+                selected_location.to_database(location_id = locations_locations_in_db)
+                logging.info(f"Location  {selected_location.name} altered.")
+                break
+            
+            else:
+                break
+
 
 def itinerary_mode():
     pass
@@ -382,7 +514,7 @@ def startup(create=False):
 
         elif command == 2:
             logging.info(f"Entering Alter mode.")
-            alter_mode()
+            alter_mode("0")
 
         elif command == 3:
             logging.info(f"Entering Itinerary mode.")
