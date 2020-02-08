@@ -409,6 +409,15 @@ def browse_mode():
     for i in all_locations.search_r:
         print(i[0] + "\t" + i[1])
 
+    selection = input("Which to select? ")
+
+    for i in all_locations.loc_list:
+        if i.id == selection:
+            i.__str__()
+            break
+
+
+        
 
 def alter_mode(locations_locations_in_db):
 
