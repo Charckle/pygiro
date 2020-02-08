@@ -8,7 +8,8 @@ logging.basicConfig(level=logging.DEBUG)  #filename='upTimer.log',level=logging.
 types_l = ["History", "Nature", "Fun", "Castle", "Cave", "Waterfall", "Hilltop/Mountain", "Food place", "Museum"]
 
 class Location():
-    def __init__(self, data):
+    def __init__(self, data, location_id = None):
+        self.id = location_id
         self.name = data["name"]
         self.type = data["type"]
         self.tags = data["tags"]
@@ -72,6 +73,22 @@ class Location():
 
         return location_id
  
+
+class L_Holder():
+    def __init__(self, locations_a):
+        self.loc_list = self.create_locations(locations_a)
+        self.search_r = set()
+
+    def create_locations(self, locations_a):
+        l_list = []
+
+        for i, b in locations_a.items():
+            location = Location(b, i)
+            l_list.append(location)
+       
+        return l_list
+
+
 def check_for_files():
     logging.debug(f"Checking if all needed files are present.")
     proceed = False
@@ -367,8 +384,8 @@ def create_mode():
 
 
 def browse_mode():
-    all_locations = pylavor.json_read("data/databases", "all_places.json")
-    
+    all_locations = L_Holder(pylavor.json_read("data/databases", "all_places.json"))
+
     terminal_menu = TerminalMenu(["Criteria", "Search"], title="Search od add criteria?")
     l_CS =  terminal_menu.show()
 
@@ -379,16 +396,19 @@ def browse_mode():
         l_criteria =  terminal_menu.show()
 
         if l_criteria != None:
-            for i, b in all_locations.items():
-                if b["type"] == l_criteria:
-                    results_locations[i] = b
+            for i in all_locations.loc_list:
+                if i.type == l_criteria:
+                    all_locations.search_r.add((i.id, i.name))
 
     else:
         search_term = input("Insert a term to search for: ") 
 
-    print(results_locations)
+        #add fuzzy search
 
-        
+
+    for i in all_locations.search_r:
+        print(i[0] + "\t" + i[1])
+
 
 def alter_mode(locations_locations_in_db):
 
