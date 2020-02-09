@@ -63,7 +63,7 @@ class Location():
 
         all_locations = pylavor.json_read("data/databases", "all_places.json")
 
-        if location_id != None:
+        if location_id == None:
             location_id = len(all_locations)
         
         all_locations[location_id] = new_location
@@ -388,6 +388,7 @@ def browse_mode():
 
     terminal_menu = TerminalMenu(["Criteria", "Search"], title="Search od add criteria?")
     l_CS =  terminal_menu.show()
+    logging.debug(f"Selected {l_CS} criteria.")
 
     #define results_location dictionary, where we will put all results to display
     results_locations = {}
@@ -406,6 +407,11 @@ def browse_mode():
         #add fuzzy search
 
 
+    print("----------------------------------------------------------")
+    logging.debug(f"Found {len(all_locations.search_r)} results.")
+    print(f"Found {len(all_locations.search_r)}")
+    print("----------------------------------------------------------")
+
     for i in all_locations.search_r:
         print(i[0] + "\t" + i[1])
 
@@ -413,7 +419,17 @@ def browse_mode():
 
     for i in all_locations.loc_list:
         if i.id == selection:
+            print("----------------------------------------------------------")
             i.__str__()
+            print("----------------------------------------------------------")
+
+            terminal_menu = TerminalMenu(["No", "Yes"], title="Do you want to edit the location?")
+            l_edit =  terminal_menu.show()
+
+            if l_edit == 1:
+                logging.debug(f"Editing the location '{i.name}'.")
+                alter_mode(i.id)
+
             break
 
 
@@ -448,11 +464,17 @@ def alter_mode(locations_locations_in_db):
 
         if alter == 0:
             print(f"Location name: {selected_location.name}")
-            selected_location.name = input("Type a name of the location: ")
+            on =selected_location.name
+            nn = input("Type a name of the location: ")
+            selected_location.name = nn 
+            logging.debug(f"Changed location name from {on} to {nn}.")
 
         elif alter == 1:
             print(f"Location type: {selected_location.type}")
-            selected_location.type = get_l_type()
+            ot = selected_location.type()
+            nt = get_l_type()
+            selected_location.type = nt 
+            logging.debug(f"Changed type from {ot} to {nt}.")
 
         elif alter == 2:
             print(f"Location tags: {selected_location.tags}")
@@ -542,8 +564,8 @@ def startup(create=False):
             browse_mode()
 
         elif command == 2:
-            logging.info(f"Entering Alter mode.")
-            alter_mode("0")
+            logging.info(f"ignore.")
+            #alter_mode("0")
 
         elif command == 3:
             logging.info(f"Entering Itinerary mode.")
