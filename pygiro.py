@@ -489,7 +489,7 @@ def alter_mode(locations_locations_in_db):
             selected_location.tts = get_l_ttl()
 
         elif alter == 5:
-            print(f"Location Coordinates: {selected_location.coordinates}")
+            print(f"Location Coordinates: {selected_location.l_coordinates}")
             selected_location.coordinates = get_l_coordinates()
 
         elif alter == 6:
@@ -505,23 +505,23 @@ def alter_mode(locations_locations_in_db):
             selected_location.long_d = input("Insert a long description: ") 
 
         elif alter == 9:
-            print(f"Contact info: {selected_location.contacts[0]}\n{selected_location.contacts[1]}\n{selected_location.contacts[2]}")
-            selected_location.contacts
+            print(f"Contact info: {selected_location.contact[0]}\n{selected_location.contact[1]}\n{selected_location.contact[2]}")
+            selected_location.contact = get_contacts()
         
         elif alter == 10:
             print(f"Timetable: {selected_location.timetable}")
             selected_location.timetable = input("Insert a timetable specifics: ")
 
         elif alter == 11:
-            print(f"Fee: {no_dep_yes(self.fee)}")
-            gselected_location.fee = set_fee()
+            print(f"Fee: {no_dep_yes(selected_location.fee)}")
+            selected_location.fee = get_fee()
         
         elif alter == 12:
-            print(f"Suitable for children: {no_dep_yes(self.child)}")
+            print(f"Suitable for children: {no_dep_yes(selected_location.child)}")
             selected_location.child = get_child()
 
         elif alter == 13:
-            print(f"Season dependand: {no_yes(self.season)}")
+            print(f"Season dependand: {no_yes(selected_location.season)}")
             selected_location.season = get_season()
 
         else:
