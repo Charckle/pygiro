@@ -471,7 +471,7 @@ def alter_mode(locations_locations_in_db):
 
         elif alter == 1:
             print(f"Location type: {selected_location.type}")
-            ot = selected_location.type()
+            ot = selected_location.type
             nt = get_l_type()
             selected_location.type = nt 
             logging.debug(f"Changed type from {ot} to {nt}.")
